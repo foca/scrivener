@@ -126,7 +126,8 @@ class Scrivener
     # @see http://cyx.github.com/ohm-contrib/doc/Ohm/NumberValidations.html
     def assert_numeric(att, error = [att, :not_numeric])
       if assert_present(att, error)
-        assert_format(att, /\A\d+\z/, error)
+        value = send(att)
+        assert(value.respond_to?(:to_int) || value.to_s.match(/\A\d+\z/), error)
       end
     end
 
