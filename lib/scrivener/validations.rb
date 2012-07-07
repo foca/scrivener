@@ -163,7 +163,7 @@ class Scrivener
       end
     end
 
-    DECIMAL = /\A(\d+)?(\.\d+)?\z/
+    DECIMAL = /\A(\d+)?(\.\d+(E\d+)?)?\z/
 
     def assert_decimal(att, error = [att, :not_decimal])
       assert_format att, DECIMAL, error
