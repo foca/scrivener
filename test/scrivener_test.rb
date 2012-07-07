@@ -227,4 +227,12 @@ scope do
     t = OtherThing.new(foo: "simple")
     assert_equal "elpmis", t.foo
   end
+
+  test "casting invalid values adds an error" do
+    t = Thing.new(ends_on: "this is not a date")
+
+    assert !t.valid?
+    assert_equal [:typecast], t.errors[:ends_on]
+    assert_equal "this is not a date", t.ends_on
+  end
 end

@@ -55,6 +55,10 @@ class Scrivener
     # attr_accessor, except the reader method will cast the object into the
     # proper type.
     #
+    # If the casting results in a TypeError or ArgumentError, then an error on
+    # :typecast will be added to this attribute and the raw attribute will be
+    # returned instead.
+    #
     # @example
     #
     #   attribute :foo
@@ -65,8 +69,13 @@ class Scrivener
       attr_writer name
 
       define_method name do
-        val = instance_variable_get(:"@#{name}")
-        val && type.call(val)
+        begin
+          val = instance_variable_get(:"@#{name}")
+          val && type.call(val)
+        rescue TypeError, ArgumentError
+          errors[name].push(:typecast)
+          val
+        end
       end
     end
   end
