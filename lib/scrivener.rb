@@ -52,8 +52,7 @@ class Scrivener
         next if ivar == :@errors
 
         att = ivar[1..-1].to_sym
-        method = respond_to?("cleaned_#{att}") ? "cleaned_#{att}" : att
-        atts[att] = send(method)
+        atts[att] = send(att)
       end
     end
   end

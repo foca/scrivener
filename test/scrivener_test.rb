@@ -196,6 +196,10 @@ class Thing < Scrivener
   attribute :name
   attribute :ends_on, Date
   attribute :price,   Decimal
+
+  def validate
+    assert_present :ends_on
+  end
 end
 
 class OtherThing < Scrivener
@@ -206,9 +210,9 @@ scope do
   test "casting to types" do
     t = Thing.new(name: "Foo", ends_on: "2012-07-31", price: "20.45")
 
-    assert_equal "Foo",                 t.cleaned_name
-    assert_equal Date.new(2012, 7, 31), t.cleaned_ends_on
-    assert_equal BigDecimal("20.45"),   t.cleaned_price
+    assert_equal "Foo",                 t.name
+    assert_equal Date.new(2012, 7, 31), t.ends_on
+    assert_equal BigDecimal("20.45"),   t.price
   end
 
   test "#attributes includes the parsed objects" do
@@ -221,6 +225,6 @@ scope do
 
   test "casting with a proc" do
     t = OtherThing.new(foo: "simple")
-    assert_equal "elpmis", t.cleaned_foo
+    assert_equal "elpmis", t.foo
   end
 end

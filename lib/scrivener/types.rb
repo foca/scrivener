@@ -51,13 +51,9 @@ class Scrivener
   #   p.cleaned_name #=> "Foo"
   #
   module Types
-    # Define an attribute with its corresponding type. This creates three
-    # methods:
-    #
-    # - A reader
-    # - A writer
-    # - A "cleaned" reader, that returns the value cast into the appropriate
-    #   type.
+    # Define an attribute with its corresponding type. This is similar to
+    # attr_accessor, except the reader method will cast the object into the
+    # proper type.
     #
     # @example
     #
@@ -66,10 +62,11 @@ class Scrivener
     #   attribute :foo, Date
     #
     def attribute(name, type=String)
-      attr_accessor name
+      attr_writer name
 
-      define_method :"cleaned_#{name}" do
-        type.call(send(name))
+      define_method name do
+        val = instance_variable_get(:"@#{name}")
+        val && type.call(val)
       end
     end
   end
