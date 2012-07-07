@@ -3,60 +3,46 @@ require "date"
 require "bigdecimal"
 
 class Scrivener
-  module Symbol # :nodoc:
-    def self.parse(value)
-      value.to_sym
+  Symbol   = ->(value) { value.to_sym }
+  String   = ->(value) { value.to_s }
+  Integer  = ->(value) { Integer(value) }
+  Float    = ->(value) { Float(value) }
+  Decimal  = ->(value) { BigDecimal(value) }
+  Date     = ->(value) { ::Date.parse(value) }
+  DateTime = ->(value) { ::DateTime.parse(value) }
+  Time     = ->(value) { ::Time.parse(value) }
+  Boolean  = ->(value) {
+    case value
+    when "f", "false", "0"; false
+    when "t", "true", "1"; true
+    else !!value
     end
-  end
-
-  module String # :nodoc:
-    def self.parse(value)
-      String(value)
-    end
-  end
-
-  module Fixnum # :nodoc:
-    def self.parse(value)
-      Integer(value)
-    end
-  end
-
-  module Float # :nodoc:
-    def self.parse(value)
-      Float(value)
-    end
-  end
-
-  module BigDecimal # :nodoc:
-    def self.parse(value)
-      BigDecimal(value)
-    end
-  end
+  }
 
   # Provides a way to define attributes so they are cast into a corresponding
   # type (defaults to +String+) when getting the attributes.
   #
-  # Any class that supports a .parse method can be used to convert objects into
-  # the corresponding types. By default these objects from ruby core/stdlib are
-  # supported:
+  # Any object that supports a .call method can be used as a "type". The
+  # following are implemented out of the box:
   #
   # - Symbol
   # - String
-  # - Fixnum
+  # - Integer
   # - Float
-  # - BigDecimal
-  # - Time
+  # - Decimal
   # - Date
+  # - Time
   # - DateTime
+  # - Boolean
   #
   # @example
   #
   #   class CreateProduct < Scrivener
   #     attribute :name
   #     attribute :description
-  #     attribute :price,           BigDecimal
+  #     attribute :price,           Decimal
   #     attribute :avaliable_after, Date
-  #     attribute :stock,           Fixnum
+  #     attribute :stock,           Integer
   #   end
   #
   #   p = CreateProduct.new(name: "Foo", price: "10.0", available_after: "2012-07-10")
@@ -83,7 +69,7 @@ class Scrivener
       attr_accessor name
 
       define_method :"cleaned_#{name}" do
-        type.parse(send(name))
+        type.call(send(name))
       end
     end
   end

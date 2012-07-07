@@ -195,12 +195,17 @@ end
 class Thing < Scrivener
   attribute :name
   attribute :ends_on, Date
-  attribute :price, BigDecimal
+  attribute :price,   Decimal
+end
+
+class OtherThing < Scrivener
+  attribute :foo, ->(val) { val.to_s.reverse }
 end
 
 scope do
   test "casting to types" do
     t = Thing.new(name: "Foo", ends_on: "2012-07-31", price: "20.45")
+
     assert_equal "Foo",                 t.cleaned_name
     assert_equal Date.new(2012, 7, 31), t.cleaned_ends_on
     assert_equal BigDecimal("20.45"),   t.cleaned_price
@@ -212,5 +217,10 @@ scope do
     assert_equal "Foo",                 t.attributes[:name]
     assert_equal Date.new(2012, 7, 31), t.attributes[:ends_on]
     assert_equal BigDecimal("20.45"),   t.attributes[:price]
+  end
+
+  test "casting with a proc" do
+    t = OtherThing.new(foo: "simple")
+    assert_equal "elpmis", t.cleaned_foo
   end
 end
