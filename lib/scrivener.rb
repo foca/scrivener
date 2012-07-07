@@ -1,9 +1,11 @@
 require_relative "scrivener/validations"
+require_relative "scrivener/types"
 
 class Scrivener
   VERSION = "0.0.3"
 
   include Validations
+  extend Types
 
   # Initialize with a hash of attributes and values.
   # If extra attributes are sent, a NoMethodError exception will be raised.
@@ -50,7 +52,8 @@ class Scrivener
         next if ivar == :@errors
 
         att = ivar[1..-1].to_sym
-        atts[att] = send(att)
+        method = respond_to?("cleaned_#{att}") ? "cleaned_#{att}" : att
+        atts[att] = send(method)
       end
     end
   end

@@ -191,3 +191,26 @@ scope do
     end
   end
 end
+
+class Thing < Scrivener
+  attribute :name
+  attribute :ends_on, Date
+  attribute :price, BigDecimal
+end
+
+scope do
+  test "casting to types" do
+    t = Thing.new(name: "Foo", ends_on: "2012-07-31", price: "20.45")
+    assert_equal "Foo",                 t.cleaned_name
+    assert_equal Date.new(2012, 7, 31), t.cleaned_ends_on
+    assert_equal BigDecimal("20.45"),   t.cleaned_price
+  end
+
+  test "#attributes includes the parsed objects" do
+    t = Thing.new(name: "Foo", ends_on: "2012-07-31", price: "20.45")
+
+    assert_equal "Foo",                 t.attributes[:name]
+    assert_equal Date.new(2012, 7, 31), t.attributes[:ends_on]
+    assert_equal BigDecimal("20.45"),   t.attributes[:price]
+  end
+end
