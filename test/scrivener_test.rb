@@ -235,4 +235,9 @@ scope do
     assert_equal [:typecast], t.errors[:ends_on]
     assert_equal "this is not a date", t.ends_on
   end
+
+  test "accepts input with the correct type" do
+    t = Thing.new(name: "Foo", ends_on: Date.new(2012, 7, 31), price: BigDecimal("10.00"))
+    assert t.valid?
+  end
 end

@@ -40,9 +40,9 @@ class Scrivener
     Integer  = ->(value) { Integer(value) }
     Float    = ->(value) { Float(value) }
     Decimal  = ->(value) { BigDecimal(value) }
-    Date     = ->(value) { ::Date.parse(value) }
-    DateTime = ->(value) { ::DateTime.parse(value) }
-    Time     = ->(value) { ::Time.parse(value) }
+    Date     = ->(value) { ::Date.parse(value.to_s) }
+    DateTime = ->(value) { ::DateTime.parse(value.to_s) }
+    Time     = ->(value) { ::Time.parse(value.to_s) }
     Boolean  = ->(value) {
       case value
       when "f", "false", "0"; false
