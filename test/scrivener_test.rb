@@ -194,8 +194,8 @@ end
 
 class Thing < Scrivener
   attribute :name
-  attribute :ends_on, Date
-  attribute :price,   Decimal
+  attribute :ends_on, Types::Date
+  attribute :price,   Types::Decimal
 
   def validate
     assert_present :ends_on
