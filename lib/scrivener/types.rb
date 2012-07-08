@@ -24,9 +24,9 @@ class Scrivener
   #   class CreateProduct < Scrivener
   #     attribute :name
   #     attribute :description
-  #     attribute :price,           Decimal
-  #     attribute :avaliable_after, Date
-  #     attribute :stock,           Integer
+  #     attribute :price,           Types::Decimal
+  #     attribute :avaliable_after, Types::Date
+  #     attribute :stock,           Types::Integer
   #   end
   #
   #   p = CreateProduct.new(name: "Foo", price: "10.0", available_after: "2012-07-10")
@@ -59,13 +59,19 @@ class Scrivener
     # :typecast will be added to this attribute and the raw attribute will be
     # returned instead.
     #
+    # @param [Symbol] name The name of the attribute.
+    # @param [#call]  type The type of this attribute (defaults to String).
+    #
     # @example
     #
     #   attribute :foo
-    #   attribute :foo, String
-    #   attribute :foo, Date
+    #   attribute :foo, Types::String
+    #   attribute :foo, Types::Date
     #
-    def attribute(name, type=String)
+    # @!macro [attach] attribute
+    #   @return [$2] the $1 attribute.
+    #
+    def attribute(name, type=Types::String)
       attr_writer name
 
       define_method name do
